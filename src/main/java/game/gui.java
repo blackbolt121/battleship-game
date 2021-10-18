@@ -49,7 +49,6 @@ public class gui extends JFrame{
     }
     private void addStatus(){
         status = new Status();
-        status.setBackground(Board.ship);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -61,7 +60,6 @@ public class gui extends JFrame{
     }
     private void addChat(){
         chat = new ChatBox();
-        chat.setBackground(Board.tried);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;

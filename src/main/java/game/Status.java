@@ -64,6 +64,7 @@ public final class Status extends JPanel{
            name.setText(ship.getName());
            st.setText(status[3]);
            bt = new javax.swing.JButton(set);
+           bt.setEnabled(false);
            this.setLayout(new GridBagLayout());
            GridBagConstraints gbc = new GridBagConstraints();
            gbc.gridwidth = 2;
