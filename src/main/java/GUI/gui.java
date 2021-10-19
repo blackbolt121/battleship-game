@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package GUI;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -49,6 +49,7 @@ public class gui extends JFrame{
     }
     private void addStatus(){
         status = new Status();
+        status.setBoard(board);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 1;

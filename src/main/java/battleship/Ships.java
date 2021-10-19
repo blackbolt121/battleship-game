@@ -28,6 +28,9 @@ public enum Ships{
     public String getName(){
         return type;
     }
+    public int getID(){
+        return id;
+    }
     public String toString(){
         return type;
     }

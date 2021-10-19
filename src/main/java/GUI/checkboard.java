@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package GUI;
 
 import javax.swing.JButton;
 
@@ -19,8 +19,8 @@ public class checkboard extends JButton{
         this.b = b;
         this.i = i;
         this.j = j;
+        this.setText(String.format("%d %d", i,j));
         this.setBackground(Board.ocean);
-        
     }
     public void paint(java.awt.Color c){
         this.setBackground(c);

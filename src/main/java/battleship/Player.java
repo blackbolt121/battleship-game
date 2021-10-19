@@ -20,4 +20,7 @@ public class Player {
         }
         this.name = name;
     }
+    public Boat getBoat(int i){
+      return boats[i];  
+    }
 }

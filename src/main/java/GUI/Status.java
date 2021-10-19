@@ -3,15 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package GUI;
 
 import battleship.Ships;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 
 /**
  *
@@ -20,21 +23,83 @@ import javax.swing.BorderFactory;
 public final class Status extends JPanel{
    public static java.awt.Color green = new java.awt.Color(6, 214, 160);
    private shipStatus[] st;
+   private List<Integer> buttons;
+   private JButton[] set;
+   private Board b;
    public Status(){
        super();
+       buttons = new ArrayList<>();
        st = new shipStatus[Ships.NUMBEROFSHIPS];
        initComponents();
+       setDefaultEvents();
+   }
+   public void setBoard(Board b){
+       this.b = b;
    }
    public void initComponents(){
        this.setLayout(new java.awt.GridLayout(5,1));
-       for(int i = 0; i<Ships.NUMBEROFSHIPS; i++){
-           st[i] = new shipStatus(Ships.getShip(i+1));
-           this.add(st[i],i,0);
+       for(int i = Ships.NUMBEROFSHIPS; i>0; i--){
+           st[Ships.NUMBEROFSHIPS-i] = new shipStatus(Ships.getShip(i));
+           this.add(st[Ships.NUMBEROFSHIPS - i],i,0);
+           
            
        }
    }
    
-   
+   public void setDefaultEvents(){
+       set = new JButton[Ships.NUMBEROFSHIPS];
+       for(int i = 0; i<Ships.NUMBEROFSHIPS; i++){
+           final int num = i;
+           set[i] = st[i].getSet();
+           set[i].setEnabled(true);
+           set[i].addActionListener(l -> {
+               JButton button = (JButton) l.getSource();
+               if(l.getSource().equals(set[num])){
+                   for (int j = 0; j < Ships.NUMBEROFSHIPS; j++) {
+                       set[j].setEnabled(false);
+                   }
+                   System.out.println(String.valueOf(5-num)+" "+ Ships.getShip(5-num).getName());
+                   b.insertBoat(Ships.getShip(5-num));
+                   //boolean isSeted = b.insertBoat(Ships.getShip(num+1));
+                   Runnable running = () -> {
+                       while (b.getCount() > 0) {
+                           try{
+                               Thread.sleep(10);
+                               //Check if coords where selected incorrectly with flag
+                           }catch(Exception e){}
+                       }
+                       //Use if flag actived
+                       
+                       //Else case
+                       buttons.add(num);
+                       //Enable available buttons
+                       for (int j = 0; j < Ships.NUMBEROFSHIPS; j++) {
+                           int aux = j;
+                           if(buttons.stream().noneMatch(number->number==aux))
+                                set[j].setEnabled(true);
+                           else{
+                               set[j].setText("Reset");
+                               if (set[j].getActionListeners().length <= 1) {
+                                   set[j].addActionListener(m -> {
+                                       //Debe borrar las coordenadas del barco previamente colocadas
+                                       System.out.println("Se borraran las coordenadas anteriores");
+
+                                   });
+                               }else{
+                                   System.out.println("Se ha agregado el evento anteriormente");
+                               }
+                               
+                               set[j].setEnabled(true);
+                           }
+                       }
+                   };
+                   Thread t = new Thread(running);
+                   t.start();
+               }
+           });
+       }
+       
+   }
    
    
    private static class shipStatus extends JPanel{
@@ -87,6 +152,9 @@ public final class Status extends JPanel{
            st.setForeground(Board.ship);
            this.add(st,gbc);
            
+       }
+       public JButton getSet(){
+           return bt;
        }
    }
    
