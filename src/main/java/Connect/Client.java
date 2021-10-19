@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Connect;
+import GUI.gui;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author rgo19
  */
-public class Client implements Runnable{
+public class Client extends gui implements Runnable{
     private Socket skt;
     private String outputMsg, inputMsg;
     boolean stop;

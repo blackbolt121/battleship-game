@@ -146,7 +146,15 @@ public class Board extends JPanel{
         }
         
     }
-    
+    public void resetCheckboard(){
+        List.of(this.check)
+                .stream()
+                .forEach(x -> List.of(x).stream()
+                        .forEach(y -> y.setBackground(Board.ocean)));
+        for(int i = 0; i<Ships.NUMBEROFSHIPS; i++){
+            this.p.getBoat(i).resetCoords();
+        }
+    }
     private static boolean checkValidCoords(Coords[] coords){
         Set<Integer> columns = List.of(coords).stream().map(c -> c.getX()).collect(Collectors.toSet());
         Set<Integer> rows = List.of(coords).stream().map(c -> c.getY()).collect(Collectors.toSet());

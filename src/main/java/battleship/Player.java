@@ -23,6 +23,7 @@ public class Player {
     public Boat getBoat(int i){
       return boats[i];  
     }
+    
     public boolean validCoords(int x, int y){
         Coords n = new Coords(x,y);
         for(Boat b : boats){

@@ -105,5 +105,7 @@ public class ChatBox extends JPanel{
     public JButton getStartGameButton(){
         return this.b[2];
     }
-    
+    public void appendText(String s){
+        this.chat.setText(chat.getText() + s + "\n");
+    }
 }

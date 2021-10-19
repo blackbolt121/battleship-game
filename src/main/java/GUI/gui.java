@@ -8,6 +8,7 @@ package GUI;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -16,9 +17,9 @@ import javax.swing.JOptionPane;
  * @author rgo19
  */
 public class gui extends JFrame{
-    private Board board;
-    private ChatBox chat;
-    private Status status;
+    protected Board board;
+    protected ChatBox chat;
+    protected Status status;
     private GridBagConstraints gbc;
     public gui(){
         super();
@@ -69,6 +70,10 @@ public class gui extends JFrame{
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(0,5,5,5);
         this.add(chat,gbc);
+    }
+    public void hardReset(){
+        this.status.hardReset();
+        this.board.resetCheckboard();
     }
     public static void main(String[] args) {
         gui g = new gui();

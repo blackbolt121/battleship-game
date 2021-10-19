@@ -49,6 +49,9 @@ public final class Status extends JPanel{
            
        }
    }
+   public void hardReset(){
+       List.of(this.set).forEach(x ->{ x.removeActionListener(rs); x.setText("Set");});
+   }
    public Board getBoard(){
        return this.b;
    }
