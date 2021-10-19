@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -25,9 +27,11 @@ public final class Status extends JPanel{
    private shipStatus[] st;
    private List<Integer> buttons;
    private JButton[] set;
+   private resetOption rs;
    private Board b;
    public Status(){
        super();
+       rs = new resetOption(this);
        buttons = new ArrayList<>();
        st = new shipStatus[Ships.NUMBEROFSHIPS];
        initComponents();
@@ -45,7 +49,12 @@ public final class Status extends JPanel{
            
        }
    }
-   
+   public Board getBoard(){
+       return this.b;
+   }
+   public JButton[] getSet(){
+       return set;
+   }
    public void setDefaultEvents(){
        set = new JButton[Ships.NUMBEROFSHIPS];
        for(int i = 0; i<Ships.NUMBEROFSHIPS; i++){
@@ -58,7 +67,6 @@ public final class Status extends JPanel{
                    for (int j = 0; j < Ships.NUMBEROFSHIPS; j++) {
                        set[j].setEnabled(false);
                    }
-                   System.out.println(String.valueOf(5-num)+" "+ Ships.getShip(5-num).getName());
                    b.insertBoat(Ships.getShip(5-num));
                    //boolean isSeted = b.insertBoat(Ships.getShip(num+1));
                    Runnable running = () -> {
@@ -74,17 +82,13 @@ public final class Status extends JPanel{
                        buttons.add(num);
                        //Enable available buttons
                        for (int j = 0; j < Ships.NUMBEROFSHIPS; j++) {
-                           int aux = j;
+                           final int aux = j;
                            if(buttons.stream().noneMatch(number->number==aux))
                                 set[j].setEnabled(true);
                            else{
                                set[j].setText("Reset");
                                if (set[j].getActionListeners().length <= 1) {
-                                   set[j].addActionListener(m -> {
-                                       //Debe borrar las coordenadas del barco previamente colocadas
-                                       System.out.println("Se borraran las coordenadas anteriores");
-
-                                   });
+                                   set[j].addActionListener(this.rs);
                                }else{
                                    System.out.println("Se ha agregado el evento anteriormente");
                                }
@@ -101,7 +105,25 @@ public final class Status extends JPanel{
        
    }
    
-   
+   private class resetOption implements ActionListener{
+       
+       private Status s;
+       
+       public resetOption(Status s){
+           this.s = s;
+       }
+
+       @Override
+       public void actionPerformed(ActionEvent e) {
+           for(int i = 0; i<s.getSet().length; i++){
+               if(e.getSource().equals(s.getSet()[i])){
+                   System.out.println(5-i);
+                   s.getBoard().resetBoatStatus(5-i);
+               }
+           }
+       }
+       
+   }
    private static class shipStatus extends JPanel{
        
        private javax.swing.JLabel name,st;

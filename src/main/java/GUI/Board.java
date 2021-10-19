@@ -6,6 +6,7 @@
 package GUI;
 
 import battleship.Boat;
+import battleship.Coords;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 import battleship.Player;
@@ -20,6 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javax.swing.JOptionPane;
 /**
  *
  * @author rgo19
@@ -57,12 +59,25 @@ public class Board extends JPanel{
                         if(tempBoat != null)
                         {
                             if(!coords.containsKey(tempBoat)){
-                                coords.put(tempBoat, p.getBoat(tempBoat))
+                                coords.put(tempBoat, p.getBoat(tempBoat.getID()-1));
                             }
-                            auto.paintCheckBoard(x, y, Board.ship);
-                            count--;
+                            if(p.validCoords(x, y)){
+                                auto.paintCheckBoard(x, y, Board.ship);
+                                p.getBoat(tempBoat.getID()-1).setCoords(x, y);
+                                count--;
+                            }
+                            //Si se han seleccionado correctamente las casillas entonces
+                            //Se procede a verificar si la continuación de las coordenadas es valida
                             if(count == 0){
-                                
+                                if(Board.checkValidCoords(coords.get(tempBoat).getCoords())){
+                                }else{
+                                    JOptionPane.showMessageDialog(null, "Las coordenadas ingresadas de su bote no son las adecuadas");
+                                    for(Coords c : coords.get(tempBoat).getCoords()){
+                                        auto.resetButton(c.getX(), c.getY());
+                                    }
+                                    coords.get(tempBoat).resetCoords();
+                                    count = tempBoat.getSize();
+                                }
                             }
                         }
                         else
@@ -115,12 +130,26 @@ public class Board extends JPanel{
     public synchronized void setPutBoat(boolean b){
         this.putBoat = b;
     }
+    
     public synchronized int getCount(){
         return count;
     }
-    private static boolean checkValidCoords(List<Entry<Integer,Integer>> coords){
-        Set<Integer> columns = coords.stream().map(x -> x.getKey()).collect(Collectors.toSet());
-        Set<Integer> rows = coords.stream().map(x -> x.getValue()).collect(Collectors.toSet());
+    
+    public void resetBoatStatus(int i){
+        if(i>0 && i<=Ships.NUMBEROFSHIPS){
+            for(Coords c : p.getBoat(i-1).getCoords()){
+                this.resetButton(c.getX(), c.getY());
+            }
+            this.p.getBoat(i-1).resetCoords();
+            count = Ships.getShip(i).getSize();
+            coords.remove(Ships.getShip(i));
+        }
+        
+    }
+    
+    private static boolean checkValidCoords(Coords[] coords){
+        Set<Integer> columns = List.of(coords).stream().map(c -> c.getX()).collect(Collectors.toSet());
+        Set<Integer> rows = List.of(coords).stream().map(c -> c.getY()).collect(Collectors.toSet());
         boolean var = true;
         if(columns.size() == 1){
             int last = -1;
@@ -128,9 +157,12 @@ public class Board extends JPanel{
                 if(last == -1){
                     last = e;
                 }else{
-                    if(!(Math.abs(last - e) == 1)){
+                    if(!(Math.abs(e-last) == 1)){
                         return false;
+                    }else{
+                        System.out.println(e + " - " + last + " = " + Math.abs(e-last));
                     }
+                    last = e;
                 }
             }
             return true;
@@ -142,6 +174,8 @@ public class Board extends JPanel{
                 }else{
                     if(!(Math.abs(last - e) == 1)){
                         return false;
+                    }else{
+                        last = e;
                     }
                 }
             }
@@ -152,10 +186,13 @@ public class Board extends JPanel{
         
     }
     private static class putBoat implements Runnable{
+        
         private Board b;
+        
         public putBoat(Board board){
             b = board;
         }
+       
         @Override
         public void run() {
             while (b.getCount() > 0) {

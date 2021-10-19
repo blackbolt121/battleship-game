@@ -25,14 +25,34 @@ public class Boat {
     public Boat(Ships s){
         setCoords = 0;
         this.ship = s;
-        cord = new Coords[s.getSize()];
+        
+        int size = s.getSize();
+        cord = new Coords[size];
         for(int i = 0; i<s.getSize(); i++){
             cord[i] = new Coords();
         }
         hits = 0;
     }
+    public Coords[] getCoords(){
+        return this.cord;
+    }
     public void setCoords(int x, int y){
-        
+        if(this.setCoords<ship.getSize()){
+            System.out.println(ship.getName());
+            cord[setCoords].setX(x);
+            cord[setCoords].setY(y);
+            System.out.println(this.setCoords);
+            this.setCoords++;
+        }
+    }
+    public void resetCoords(){
+        for(int i = 0; i<this.getCoords().length; i++){
+            cord[i].reset();
+        }
+        this.setCoords = 0;
+    }
+    public void setCoordsVar(int i){
+        this.setCoords = i;
     }
     public boolean isHit(Coords coord){
         Predicate<Coords> equalsCoords = x -> x.equals(coord);
