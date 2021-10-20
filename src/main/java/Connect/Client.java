@@ -33,11 +33,10 @@ public class Client extends gui implements Runnable{
         while (skt == null) {
             try {
                 skt = new Socket("127.0.0.1", 9999);
-                System.out.println("Connection stablished");
+                chat.appendText("<---- (system): connection established with server ---->");
             } catch (Exception e) {
                 try {
                     skt = null;
-                    System.out.println("Trying to connect");
                     Thread.sleep(1000);
 
                 } catch (Exception ex) {
@@ -51,7 +50,6 @@ public class Client extends gui implements Runnable{
             startService();
             while(!stop){
                 if(in.available() > 0){
-                    System.out.println("Recieved message from server");
                     this.setCommand(in.readUTF());
                     if(this.command.startsWith("$message ")){
                         String r[] = this.command.split(" ");
@@ -62,7 +60,6 @@ public class Client extends gui implements Runnable{
                         chat.appendText(exit);
                     }
                     if (command.startsWith("$attack")) {
-                        System.out.println("Enemy launch an attack");
                             String arr[] = command.split(" ");
                             if(arr.length == 3){
                                 Integer i = Integer.valueOf(arr[1]), e = Integer.valueOf(arr[2]);
@@ -71,7 +68,11 @@ public class Client extends gui implements Runnable{
                                     this.board.paintCheckBoard(i, e, Board.hit, ((this.board.getCheckBoard(i, e).isEnabled())?true:false));
                                     this.board.getCheckBoard(i, e).setForeground(Board.ship);
                                     this.board.getCheckBoard(i, e).setBorder(BorderFactory.createLineBorder(Board.ship));
-                                    out.writeUTF(String.format("$sucess %d %d",i,e));
+                                    out.writeUTF(String.format("$success %d %d",i,e));
+                                    out.writeUTF(String.format("$success %d %d",i,e));
+                                    if(this.board.getBoatByHit(i, e).isSunked()){
+                                        out.writeUTF("$message (" + this.board.getPlayerGame() + "): You have sunken my " + this.board.getBoatByHit(i, e).getShip().toString());
+                                    }
                                 }else{
                                     out.writeUTF(String.format("$fail %d %d",i,e));
                                 }
@@ -109,7 +110,6 @@ public class Client extends gui implements Runnable{
                     this.setCommand("");
                 }
                 if(this.getCmd().length() > 0 && !(this.getCmd().matches("^\\s+$"))){
-                    System.out.println("Sending command " + this.getCmd());
                     out.writeUTF(this.getCmd());
                     this.setCmd("");
                 }

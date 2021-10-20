@@ -40,7 +40,7 @@ public class ChatBox extends JPanel{
     
     private void initComponents(){
         //Se crea el TextArea donde se imprimira el chat
-        chat = new JTextArea(100000000,50);
+        chat = new JTextArea(5000,50);
         chat.setEnabled(false);
         chat.setForeground(Color.ORANGE);
         js = new JScrollPane(chat);

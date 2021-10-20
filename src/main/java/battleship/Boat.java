@@ -55,10 +55,8 @@ public class Boat {
     
     public void setCoords(int x, int y){
         if(this.setCoords<ship.getSize()){
-            System.out.println(ship.getName());
             cord[setCoords].setX(x);
             cord[setCoords].setY(y);
-            System.out.println(this.setCoords);
             this.setCoords++;
         }
     }

@@ -41,16 +41,15 @@ public class Server extends gui implements Runnable{
     
     @Override
     public void run(){
-        System.out.println("Executed run");
         while(true){
             try {
                 sckt = ss.accept();
+                chat.appendText("<---- (system): connection established with client ---->");
                 boolean band = true;
                 DataInputStream dis = new DataInputStream(sckt.getInputStream());
                 DataOutputStream dos = new DataOutputStream(sckt.getOutputStream());
                 while (band) {
                     if(dis.available()>0){
-                        System.out.println("Recieved message from client");
                         command = dis.readUTF();
                         if(command.equals("$end")){
                             chat.appendText("Client is closing session, entering in hardreset");
@@ -58,7 +57,6 @@ public class Server extends gui implements Runnable{
                             band = false;
                         }
                         if(command.startsWith("$attack")){
-                            System.out.println("Enemy launch an attack");
                             String arr[] = command.split(" ");
                             if(arr.length == 3){
                                 Integer i = Integer.valueOf(arr[1]), e = Integer.valueOf(arr[2]);
@@ -67,7 +65,10 @@ public class Server extends gui implements Runnable{
                                     this.board.paintCheckBoard(i, e, Board.hit, ((this.board.getCheckBoard(i, e).isEnabled())?true:false));
                                     this.board.getCheckBoard(i, e).setForeground(Board.ship);
                                     this.board.getCheckBoard(i, e).setBorder(BorderFactory.createLineBorder(Board.ship));
-                                    dos.writeUTF(String.format("$sucess %d %d",i,e));
+                                    dos.writeUTF(String.format("$success %d %d",i,e));
+                                    if(this.board.getBoatByHit(i, e).isSunked()){
+                                        dos.writeUTF("$message (" + this.board.getPlayerGame() + "): You have sunken my " + this.board.getBoatByHit(i, e).getShip().toString());
+                                    }
                                 }else{
                                     dos.writeUTF(String.format("$fail %d %d",i,e));
                                 }
@@ -97,10 +98,12 @@ public class Server extends gui implements Runnable{
                             }
                             chat.appendText(String.format("(System): Shot over [%d,%d] failed",a,b));
                             
-                        }else if(command.startsWith("$success ")){
+                        }
+                        if(command.startsWith("$success ")){
                             String r[] = this.command.split(" ");
                             Integer a = Integer.valueOf(r[1]), b = Integer.valueOf(r[2]);
-                            if(!this.board.coordsInBoat(a, b)){
+                            
+                            if(this.board.coordsInBoat(a, b) == false){
                                 this.board.paintCheckBoard(a, b, Board.hit, false);
                             }else{
                                 this.board.paintBorderCheckBoard(a, b, Board.hit, false);
@@ -110,7 +113,6 @@ public class Server extends gui implements Runnable{
                         this.setCommand("");
                     }
                     if(this.getCmd().length() > 0 && !this.getCmd().matches("^\\s+$")){
-                        System.out.println(cmd);
                         dos.writeUTF(cmd);
                         if(cmd.equals("$end")){
                             this.chat.appendText("Server is closing");

@@ -14,7 +14,7 @@ public class Main {
         Runnable a = () ->{ System.out.println("Excuting client"); Client c = new Client(); };
         Runnable b = () -> {System.out.println("Executing server");Server s = new Server();};
         Thread x = new Thread(a), y = new Thread(b);
-        if(false)
+        if(true)
             y.run();
         else
             x.run();

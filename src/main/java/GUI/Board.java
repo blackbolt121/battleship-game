@@ -234,8 +234,6 @@ public class Board extends JPanel{
                 }else{
                     if(!(Math.abs(e-last) == 1)){
                         return false;
-                    }else{
-                        System.out.println(e + " - " + last + " = " + Math.abs(e-last));
                     }
                     last = e;
                 }
@@ -249,9 +247,8 @@ public class Board extends JPanel{
                 }else{
                     if(!(Math.abs(last - e) == 1)){
                         return false;
-                    }else{
-                        last = e;
                     }
+                    last = e;
                 }
             }
             return true;
@@ -260,7 +257,9 @@ public class Board extends JPanel{
         }
         
     }
-
+    public Boat getBoatByHit(int x, int y){
+        return this.p.getHittenBoat(x, y);
+    }
     public boolean isError() {
         return error;
     }
