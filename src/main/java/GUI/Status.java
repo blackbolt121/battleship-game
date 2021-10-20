@@ -79,33 +79,42 @@ public final class Status extends JPanel{
                                //Check if coords where selected incorrectly with flag
                            }catch(Exception e){}
                        }
-                       //Use if flag actived
+                       
                        
                        //Else case
                        buttons.add(num);
                        //Enable available buttons
                        for (int j = 0; j < Ships.NUMBEROFSHIPS; j++) {
                            final int aux = j;
-                           if(buttons.stream().noneMatch(number->number==aux))
+                           if(buttons.stream().noneMatch(number->number==aux) ){
                                 set[j].setEnabled(true);
+                                st[j].setLabelStatus(3);
+                           }
                            else{
                                set[j].setText("Reset");
+                               st[j].setLabelStatus(0);
                                if (set[j].getActionListeners().length <= 1) {
                                    set[j].addActionListener(this.rs);
-                               }else{
-                                   System.out.println("Se ha agregado el evento anteriormente");
                                }
                                
                                set[j].setEnabled(true);
                            }
                        }
+                       //Use if flag actived
+                       if(b.isError()){
+                           st[num].setLabelStatus(3);
+                       }
                    };
                    Thread t = new Thread(running);
                    t.start();
                }
+               
            });
        }
        
+   }
+   public void updateLabelStatus(int i, int j){
+       this.st[i].setLabelStatus(j);
    }
    
    private class resetOption implements ActionListener{
@@ -114,6 +123,7 @@ public final class Status extends JPanel{
        
        public resetOption(Status s){
            this.s = s;
+           
        }
 
        @Override
@@ -121,6 +131,7 @@ public final class Status extends JPanel{
            for(int i = 0; i<s.getSet().length; i++){
                if(e.getSource().equals(s.getSet()[i])){
                    System.out.println(5-i);
+                   s.st[i].setLabelStatus(3);
                    s.getBoard().resetBoatStatus(5-i);
                }
            }
@@ -128,27 +139,32 @@ public final class Status extends JPanel{
        
    }
    private static class shipStatus extends JPanel{
-       
        private javax.swing.JLabel name,st;
        private Ships ship;
+       
        RadiusPanel radius;
        private javax.swing.JButton bt;
        private final static String set = "Set";
-       private final static String status[] = {"Online","Damaged","Sunked","Unknown"};
+       private final static String status[] = {"Online","Damaged","Offline","Unknown"};
        public shipStatus(Ships s){
            super();
            ship = s;
            initComponents();
        }
+       public javax.swing.JButton getButton(){
+           return this.bt;
+       }
        public void setLabelStatus(int i){
-           if(i<=status.length && i>=0){
+           if(i<status.length && i>=0){
+               Color[] c = {Color.GREEN, Board.tried, Board.hit, Board.ship};
                this.st.setText(status[i]);
+               this.st.setForeground(c[i]);
            }
        }
        public void setColor(java.awt.Color c){
            st.setForeground(c);
        }
-       private void initComponents(){
+       private void initComponents() {
            name = new javax.swing.JLabel();
            st = new javax.swing.JLabel();
            name.setText(ship.getName());
@@ -166,21 +182,28 @@ public final class Status extends JPanel{
            name.setText(ship.getName() + "  ");
            name.setHorizontalAlignment(javax.swing.JLabel.CENTER);
            name.setVerticalAlignment(javax.swing.JLabel.CENTER);
-           this.add(name,gbc);
+           this.add(name, gbc);
            gbc.gridwidth = 1;
            gbc.weightx = 0.5;
            gbc.gridx = 0;
            gbc.gridy = 1;
-           this.add(bt,gbc);
+           this.add(bt, gbc);
            gbc.gridx = 1;
            st.setHorizontalAlignment(javax.swing.JLabel.CENTER);
            st.setForeground(Board.ship);
-           this.add(st,gbc);
-           
+           this.add(st, gbc);
+           this.setLabelStatus(3);
+
        }
-       public JButton getSet(){
+
+       public JButton getSet() {
            return bt;
        }
+
+       public Ships getShip() {
+           return ship;
+       }
+  
    }
    
    private static class RadiusPanel extends JPanel{

@@ -40,12 +40,11 @@ public class ChatBox extends JPanel{
     
     private void initComponents(){
         //Se crea el TextArea donde se imprimira el chat
-        chat = new JTextArea();
+        chat = new JTextArea(100000000,50);
         chat.setEnabled(false);
         chat.setForeground(Color.ORANGE);
         js = new JScrollPane(chat);
-        js.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        js.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        js.setAutoscrolls(true);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -77,7 +76,7 @@ public class ChatBox extends JPanel{
         this.getCleanChatBoxButton().addActionListener(a -> chat.setText(""));
         this.getSendMessageButton().addActionListener(a -> {
             if(!msgbox.getText().equals(""))
-                chat.setText(chat.getText() +  msgbox.getText() + "\n");
+                chat.setText(chat.getText() + "(You): " + msgbox.getText() + "\n");
             msgbox.setText("");
         });
     }

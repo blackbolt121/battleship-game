@@ -5,6 +5,7 @@
  */
 package battleship;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -18,11 +19,13 @@ public class Boat {
     private Ships ship;
     private int hits;
     private boolean sunked;
-    
+    private List<Coords> damagedCoords;
     public Boat(){
         hits = 0;
+        damagedCoords = new ArrayList<>();
     }
     public Boat(Ships s){
+        this();
         setCoords = 0;
         this.ship = s;
         
@@ -36,6 +39,20 @@ public class Boat {
     public Coords[] getCoords(){
         return this.cord;
     }
+    
+    public boolean isSet(){
+        Predicate<Integer> validComponent = x -> x<10 && x>=0;
+        return  List.of(cord)
+                .stream()
+                .map(x -> x.getX())
+                .noneMatch(validComponent) 
+                && 
+                List.of(cord)
+                .stream()
+                .map(x -> x.getY())
+                .noneMatch(validComponent);
+    }
+    
     public void setCoords(int x, int y){
         if(this.setCoords<ship.getSize()){
             System.out.println(ship.getName());
@@ -60,8 +77,11 @@ public class Boat {
                 .stream()
                 .anyMatch(equalsCoords);
         if(hit){
-            hits++;
-            sunked = (hits == ship.getSize()); 
+            if(this.damagedCoords.stream().noneMatch(equalsCoords)){
+                hits++;
+                sunked = (hits == ship.getSize());
+                this.damagedCoords.add(coord);
+            }
         }
         return hit;
     }

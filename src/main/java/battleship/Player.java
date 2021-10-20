@@ -35,4 +35,34 @@ public class Player {
         }
         return true;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+    
+    public Boat getHittenBoat(int x, int y){
+        Coords n = new Coords(x,y);
+        for(int i = 0; i<this.boats.length; i++){
+            for(Coords c : boats[i].getCoords()){
+                if(c.equals(n)){
+                    return boats[i];
+                }
+            }
+        }
+        return null;
+    }
+    
+    public boolean attackCoords(int x, int y){
+        boolean hit = !validCoords(x,y);
+        if(hit){
+            int id = getHittenBoat(x,y).getShip().getID() - 1;
+            this.getBoat(id).isHit(new Coords(x,y));
+            return true;
+        }
+        return false;
+    }
 }
