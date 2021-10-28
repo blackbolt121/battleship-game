@@ -9,8 +9,8 @@ package Connect;
  *
  * @author rgo19
  */
-public class Main {
+public class Cliente {
     public static void main(String[] args) {
-        Server s = new Server();
+        Client c = new Client();
     }
 }
